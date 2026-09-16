@@ -3,7 +3,7 @@ CREATE TABLE account (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
     username TEXT UNIQUE NOT NULL,
     pin TEXT NOT NULL
-        CHECK(pin ~* '^[0-9]{4}$'),                     -- Account PIN must be 4 digits long
+        CHECK(pin ~ '^[0-9]{4}$'),                      -- Account PIN must be 4 digits long
     balance NUMERIC(15, 2) NOT NULL DEFAULT 0.00
         CHECK(balance >= 0.00)                          -- Account balance cannot be negative
 );
