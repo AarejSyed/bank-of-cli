@@ -1,6 +1,7 @@
 -- Create Account table
 CREATE TABLE account (
     id BIGINT GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+    username TEXT UNIQUE NOT NULL,
     pin TEXT NOT NULL
         CHECK(LENGTH(pin) = 4),                         -- Account PIN must be 4 characters long
     balance NUMERIC(15, 2) NOT NULL DEFAULT 0.00
