@@ -8,12 +8,12 @@ CREATE TABLE account (
         CHECK(balance >= 0.00)                          -- Account balance cannot be negative
 );
 
--- Create Bank_Transaction_Type enum type
-CREATE TYPE bank_transaction_type AS ENUM(
-    'Deposit',
-    'Withdrawal',
-    'Transfer_In',
-    'Transfer_Out'
+-- Create Bank_Transaction_Type_Enum type
+CREATE TYPE bank_transaction_type_enum AS ENUM (
+    'deposit',
+    'withdrawal',
+    'transfer_in',
+    'transfer_out'
 );
 
 -- Create Bank_Transaction table
@@ -24,7 +24,7 @@ CREATE TABLE bank_transaction (
     amount NUMERIC(15, 2) NOT NULL
         CHECK(amount > 0.00),                           -- Bank_Transaction dollar amount must be positive
     timestamp TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-    type bank_transaction_type NOT NULL
+    type bank_transaction_type_enum NOT NULL
 );
 
 -- Optimize Bank_Transaction lookups by account_id
