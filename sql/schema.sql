@@ -27,5 +27,6 @@ CREATE TABLE bank_transaction (
     type bank_transaction_type_enum NOT NULL
 );
 
--- Optimize Bank_Transaction lookups by account_id
-CREATE INDEX bank_transaction_account_id_idx ON bank_transaction(account_id);
+-- Optimize Bank_Transaction lookups by account_id and chronological order
+CREATE INDEX bank_transaction_account_id_timestamp_idx
+ON bank_transaction(account_id, timestamp DESC);
