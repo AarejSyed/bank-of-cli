@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 import com.bankofcli.domain.Account;
 
 public class AccountDaoImpl implements AccountDao {
-    private static final String INSERT_SQL = "INSERT INTO account (username, password) VALUES (?, ?)";
+    private static final String INSERT_SQL = "INSERT INTO account (username, pin) VALUES (?, ?)";
     private static final String FIND_BY_USERNAME_SQL = "SELECT * FROM account WHERE username = ?";
     private static final String UPDATE_BALANCE_SQL = "UPDATE account SET balance = ? WHERE id = ?";
 
@@ -40,8 +40,12 @@ public class AccountDaoImpl implements AccountDao {
             statement.setString(1, username);
 
             try (ResultSet resultSet = statement.executeQuery()) {
-                return mapAccount(resultSet);
+                if (resultSet.next()) {
+                    return mapAccount(resultSet);
+                }
             }
+            
+            return null;
         }
         catch (SQLException e) {
             throw databaseError("Could not find account with username " + username, e);
