@@ -13,14 +13,13 @@ import com.bankofcli.domain.BankTransaction;
 import com.bankofcli.domain.BankTransactionType;
 
 public class BankTransactionDaoImpl implements BankTransactionDao {
-    private static final String INSERT_SQL = "INSERT INTO bank_transaction (id, account_id, amount, type) VALUES (?, ?, ?, ?::bank_transaction_type_enum)";
+    private static final String INSERT_SQL = "INSERT INTO bank_transaction (account_id, amount, type) VALUES (?, ?, ?::bank_transaction_type_enum)";
     private static final String FIND_ALL_BY_ACCOUNT_ID_DESCENDING_SQL = "SELECT * FROM bank_transaction WHERE account_id = ? ORDER BY timestamp DESC";
 
     public BankTransactionDaoImpl() {}
 
     @Override
-    public void performBankTransaction(
-        long transactionId,
+    public void registerBankTransaction(
         long accountId,
         BigDecimal amount,
         BankTransactionType type
@@ -40,10 +39,9 @@ public class BankTransactionDaoImpl implements BankTransactionDao {
             };
 
             // Set parameters of prepared statement
-            statement.setLong(1, transactionId);
-            statement.setLong(2, accountId);
-            statement.setBigDecimal(3, amount);
-            statement.setString(4, typeString);
+            statement.setLong(1, accountId);
+            statement.setBigDecimal(2, amount);
+            statement.setString(3, typeString);
 
             statement.executeUpdate();
         }

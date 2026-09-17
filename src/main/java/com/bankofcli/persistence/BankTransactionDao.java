@@ -7,8 +7,7 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface BankTransactionDao {
-    void performBankTransaction(
-        long transactionId,
+    void registerBankTransaction(
         long accountId,
         BigDecimal amount,
         BankTransactionType type
