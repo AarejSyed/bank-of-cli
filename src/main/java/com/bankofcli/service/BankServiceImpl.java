@@ -22,7 +22,7 @@ public class BankServiceImpl implements BankService {
 
     // Register new account
     @Override
-    public long registerAccount(String pin) {
+    public long registerAccount(String pin) throws IllegalArgumentException {
         if (!pin.matches("\\d{4}")) { throw new IllegalArgumentException("PIN must consist of four digits"); }
         
         Account newAccount = new Account(pin);
@@ -47,7 +47,7 @@ public class BankServiceImpl implements BankService {
 
     // Log out of account
     @Override
-    public void logOutOfAccount() {
+    public void logOutOfAccount() throws RuntimeException {
         if (!isLoggedIn()) { throw new RuntimeException("Cannot log out while not logged into account"); }
         
         loggedInAccount = null;
@@ -55,7 +55,7 @@ public class BankServiceImpl implements BankService {
 
     // Get account balance
     @Override
-    public BigDecimal getAccountBalance() { 
+    public BigDecimal getAccountBalance() throws RuntimeException { 
         if (!isLoggedIn()) { throw new RuntimeException("Cannot access account balance while not logged into account"); }
         
         return loggedInAccount.getBalance();
@@ -63,7 +63,7 @@ public class BankServiceImpl implements BankService {
 
     // Deposit money into account
     @Override
-    public void deposit(BigDecimal amount) {
+    public void deposit(BigDecimal amount) throws RuntimeException, IllegalArgumentException {
         if (!isLoggedIn()) { throw new RuntimeException("Cannot deposit money while not logged into account"); }
         if (amount.signum() <= 0) { throw new IllegalArgumentException("Amount of money deposited must be positive"); }
         
@@ -73,7 +73,7 @@ public class BankServiceImpl implements BankService {
 
     // Withdraw money from account
     @Override
-    public void withdraw(BigDecimal amount) {
+    public void withdraw(BigDecimal amount) throws RuntimeException, IllegalArgumentException {
         if (!isLoggedIn()) { throw new RuntimeException("Cannot withdraw money while not logged into account"); }
         if (amount.signum() <= 0) { throw new IllegalArgumentException("Amount of money withdrawn must be positive"); }
         if (amount.compareTo(loggedInAccount.getBalance()) > 0) { throw new IllegalArgumentException("Amount of money withdrawn cannot exceed account balance"); }
@@ -96,7 +96,7 @@ public class BankServiceImpl implements BankService {
 
     // Transfer money to another account
     @Override
-    public void transfer(BigDecimal amount, long destinationAccountId) {
+    public void transfer(BigDecimal amount, long destinationAccountId) throws RuntimeException, NoSuchElementException, IllegalArgumentException {
         if (!isLoggedIn()) { throw new RuntimeException("Cannot transfer money while not logged into account"); }
         Account destinationAccount = bankDao.selectAccountById(destinationAccountId).orElseThrow(
             () -> new NoSuchElementException("Cannot transfer money to non-existent account " + destinationAccountId)
@@ -129,7 +129,7 @@ public class BankServiceImpl implements BankService {
 
     // Get account's bank transaction history sorted by time (descending)
     @Override
-    public List<BankTransaction> getBankTransactionHistory() {
+    public List<BankTransaction> getBankTransactionHistory() throws RuntimeException {
         if (!isLoggedIn()) { throw new RuntimeException("Cannot access transaction history while not logged into account"); }
 
         return bankDao.selectAllBankTransactionsByAccountIdDescending(loggedInAccount.getId());
