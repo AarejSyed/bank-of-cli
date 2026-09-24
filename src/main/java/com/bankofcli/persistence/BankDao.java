@@ -7,7 +7,7 @@ import com.bankofcli.domain.Account;
 import com.bankofcli.domain.BankTransaction;
 
 // Data Access Object interface for Account and BankTransaction
-public interface Dao {
+public interface BankDao {
     // Account
     Account insertAccount(Account account);
     Optional<Account> selectAccountById(long accountId);

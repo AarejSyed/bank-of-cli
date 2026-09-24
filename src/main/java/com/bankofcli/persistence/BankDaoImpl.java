@@ -13,7 +13,7 @@ import com.bankofcli.domain.Account;
 import com.bankofcli.domain.BankTransaction;
 import com.bankofcli.domain.BankTransactionType;
 
-public class DaoImpl implements Dao {
+public class BankDaoImpl implements BankDao {
     // Account SQL query Strings
     private static final String INSERT_ACCOUNT_SQL = "INSERT INTO account (pin) VALUES (?) RETURNING id, pin, balance";
     private static final String SELECT_ACCOUNT_BY_ID_SQL = "SELECT id, pin, balance FROM account WHERE id = ?";
@@ -23,7 +23,7 @@ public class DaoImpl implements Dao {
     private static final String INSERT_BANK_TRANSACTION_SQL = "INSERT INTO bank_transaction (account_id, amount, type) VALUES (?, ?, ?::bank_transaction_type_enum) RETURNING id, account_id, amount, timestamp, type";
     private static final String SELECT_ALL_BANK_TRANSACTIONS_BY_ACCOUNT_ID_DESCENDING_SQL = "SELECT id, account_id, amount, timestamp, type FROM bank_transaction WHERE account_id = ? ORDER BY timestamp DESC";
 
-    public DaoImpl() {}
+    public BankDaoImpl() {}
 
     // ACCOUNT METHODS
 
