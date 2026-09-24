@@ -11,6 +11,7 @@ public interface BankService {
     long registerAccount(String pin);
     boolean logInToAccount(long accountId, String pin);
     void logOutOfAccount();
+    boolean isLoggedIn();
 
     // Balance management
     BigDecimal getAccountBalance();

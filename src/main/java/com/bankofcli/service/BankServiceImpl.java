@@ -135,6 +135,6 @@ public class BankServiceImpl implements BankService {
         return bankDao.selectAllBankTransactionsByAccountIdDescending(loggedInAccount.getId());
     }
 
-    // HELPER METHOD: Check if user is logged into account
-    private boolean isLoggedIn() { return this.loggedInAccount != null; }
+    // Check if user is logged into account
+    public boolean isLoggedIn() { return this.loggedInAccount != null; }
 }
