@@ -1,24 +1,29 @@
 package com.bankofcli.persistence;
 
-import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import com.bankofcli.domain.Account;
 import com.bankofcli.domain.BankTransaction;
-import com.bankofcli.domain.BankTransactionType;
 
-// Data Access Object for Account and Bank_Transaction
+// Data Access Object interface for Account and BankTransaction
 public interface Dao {
     // Account
-    void addAccount(String username, String pin);
-    Account getAccountByUsername(String username);
-    void setAccountBalance(long accountId, BigDecimal newBalance);
+    Account insertAccount(Account account);
+    Optional<Account> selectAccountById(long accountId);
 
-    // Bank_Transaction
-    void addBankTransaction(
-        long accountId,
-        BigDecimal amount,
-        BankTransactionType type
+    // BankTransaction
+    List<BankTransaction> selectAllBankTransactionsByAccountIdDescending(long accountId);
+
+    // Account and BankTransaction
+    BankTransaction updateAccountAndInsertStandardBankTransaction(
+        Account account,
+        BankTransaction bankTransaction
     );
-    List<BankTransaction> getAllBankTransactionsByAccountIdDescending(long accountId);
+    BankTransaction[] updateAccountsAndInsertTransferBankTransactions(
+        Account sourceAccount,
+        Account destinationAccount,
+        BankTransaction sourceBankTransaction,
+        BankTransaction destinationBankTransaction
+    );
 }
