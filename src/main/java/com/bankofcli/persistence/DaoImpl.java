@@ -1,6 +1,5 @@
 package com.bankofcli.persistence;
 
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -92,7 +91,7 @@ public class DaoImpl implements Dao {
                 }
             }
 
-            // If Account selection fails, roll back and throw error
+            // If Account selection fails, throw error
             catch (SQLException e) {
                 throw databaseError("Could not find Account with ID: " + id, e);
             }
@@ -250,10 +249,16 @@ public class DaoImpl implements Dao {
                 return bankTransaction;
             }
 
-            // If actions fail, roll back and throw error
-            catch (SQLException e) {
-                connection.rollback();
-                throw databaseError("Could not insert new Bank_Transaction into database nor update associated account: " + account.getId(), e);
+            // If helper action fails, roll back and re-throw error
+            catch (RuntimeException e) {
+                try {
+                    connection.rollback();
+                }
+                catch (SQLException rollbackException) {
+                    e.addSuppressed(rollbackException);
+                }
+
+                throw e;
             }
         }
 
@@ -286,10 +291,16 @@ public class DaoImpl implements Dao {
                 return new BankTransaction[] {sourceBankTransaction, destinationBankTransaction};
             }
 
-            // If actions fail, roll back and throw error
-            catch (SQLException e) {
-                connection.rollback();
-                throw databaseError("Could not insert new Bank_Transactions into database nor update associated accounts: " + sourceAccount.getId() + ", " + destinationAccount.getId(), e);
+            // If helper actions fail, roll back and re-throw error
+            catch (RuntimeException e) {
+                try {
+                    connection.rollback();
+                }
+                catch (SQLException rollbackException) {
+                    e.addSuppressed(rollbackException);
+                }
+
+                throw e;
             }
         }
 
