@@ -3,6 +3,8 @@ package com.bankofcli.service;
 import java.math.BigDecimal;
 import java.util.NoSuchElementException;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.bankofcli.domain.Account;
 import com.bankofcli.domain.BankTransaction;
@@ -13,20 +15,26 @@ import com.bankofcli.persistence.BankDao;
 public class BankServiceImpl implements BankService {
     private final BankDao bankDao;
     private Account loggedInAccount;
+    private static Logger logger;
 
     // Constructor: requires Bank DAO
     public BankServiceImpl(BankDao bankDao) {
         this.bankDao = bankDao;
         loggedInAccount = null;
+        logger = LoggerFactory.getLogger(BankServiceImpl.class);
     }
 
     // Register new account
     @Override
     public long registerAccount(String pin) throws IllegalArgumentException {
-        if (!pin.matches("\\d{4}")) { throw new IllegalArgumentException("PIN must consist of four digits"); }
+        if (!pin.matches("\\d{4}")) {
+            logger.error("User attempted to register account with invalid PIN format");
+            throw new IllegalArgumentException("PIN must consist of four digits");
+        }
         
         Account newAccount = new Account(pin);
         bankDao.insertAccount(newAccount);
+        logger.info("Registered new account with ID: {}", newAccount.getId());
         return newAccount.getId();
     }
 
@@ -35,12 +43,16 @@ public class BankServiceImpl implements BankService {
     public boolean logInToAccount(long accountId, String pin) throws NoSuchElementException {
         // Retrieve account, and throw exception if it doesn't exist
         Account account = bankDao.selectAccountById(accountId).orElseThrow(
-            () -> new NoSuchElementException("Account " + accountId + " does not exist")
+            () -> {
+                logger.error("User attempted to log in to non-existent account ID: {}", accountId);
+                return new NoSuchElementException("Account " + accountId + " does not exist");
+            }
         );
 
         // Successfully log in if supplied PIN matches actual account PIN
         boolean loggedIn = account.getPin().equals(pin);
         if (loggedIn) { loggedInAccount = account; }
+        logger.info("Logged in account ID: {}", loggedInAccount.getId());
         
         return loggedIn;
     }
@@ -50,6 +62,7 @@ public class BankServiceImpl implements BankService {
     public void logOutOfAccount() throws RuntimeException {
         if (!isLoggedIn()) { throw new RuntimeException("Cannot log out while not logged into account"); }
         
+        logger.info("Logged out account ID: {}", loggedInAccount.getId());
         loggedInAccount = null;
     }
 
@@ -67,6 +80,7 @@ public class BankServiceImpl implements BankService {
         if (!isLoggedIn()) { throw new RuntimeException("Cannot deposit money while not logged into account"); }
         if (amount.signum() <= 0) { throw new IllegalArgumentException("Amount of money deposited must be positive"); }
         
+        logger.info("Depositing ${} into account ID: {}", amount, loggedInAccount.getId());
         loggedInAccount.setBalance(loggedInAccount.getBalance().add(amount));
         standardBankTransaction(BankTransactionType.DEPOSIT, amount);
     }
@@ -78,6 +92,7 @@ public class BankServiceImpl implements BankService {
         if (amount.signum() <= 0) { throw new IllegalArgumentException("Amount of money withdrawn must be positive"); }
         if (amount.compareTo(loggedInAccount.getBalance()) > 0) { throw new IllegalArgumentException("Amount of money withdrawn cannot exceed account balance"); }
 
+        logger.info("Withdrawing ${} from account ID: {}", amount,loggedInAccount.getId());
         loggedInAccount.setBalance(loggedInAccount.getBalance().subtract(amount));
         standardBankTransaction(BankTransactionType.WITHDRAWAL, amount);
     }
@@ -104,6 +119,7 @@ public class BankServiceImpl implements BankService {
         if (amount.signum() <= 0) { throw new IllegalArgumentException("Amount of money transferred must be positive"); }
         if (amount.compareTo(loggedInAccount.getBalance()) > 0) { throw new IllegalArgumentException("Amount of money transferred cannot exceed account balance"); }
 
+        logger.info("Transferring ${} from account ID {} to account ID {}", amount, loggedInAccount.getId(), destinationAccount.getId());
         loggedInAccount.setBalance(loggedInAccount.getBalance().subtract(amount));
         destinationAccount.setBalance(destinationAccount.getBalance().add(amount));
         transferBankTransaction(amount, destinationAccount);
