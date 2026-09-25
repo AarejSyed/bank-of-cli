@@ -137,4 +137,16 @@ public class BankServiceImpl implements BankService {
 
     // Check if user is logged into account
     public boolean isLoggedIn() { return this.loggedInAccount != null; }
+
+    // Get account ID of logged in account
+    public long getAccountId() throws RuntimeException {
+        if (!isLoggedIn()) { throw new RuntimeException("Cannot access account ID while not logged into account"); }
+
+        return this.loggedInAccount.getId();
+    }
+
+    // Check if account exists
+    public boolean accountExists(long accountId) {
+        return bankDao.selectAccountById(accountId).isPresent();
+    }
 }

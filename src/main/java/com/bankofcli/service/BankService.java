@@ -13,6 +13,10 @@ public interface BankService {
     void logOutOfAccount();
     boolean isLoggedIn();
 
+    // Account management
+    long getAccountId();
+    boolean accountExists(long accountId);
+
     // Balance management
     BigDecimal getAccountBalance();
 
