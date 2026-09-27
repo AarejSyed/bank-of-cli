@@ -49,10 +49,17 @@ public class BankServiceImpl implements BankService {
             }
         );
 
-        // Successfully log in if supplied PIN matches actual account PIN
+        // Determine if supplied PIN matches actual account PIN
         boolean loggedIn = account.getPin().equals(pin);
-        if (loggedIn) { loggedInAccount = account; }
-        logger.info("Logged in account ID: {}", loggedInAccount.getId());
+        
+        // Successfully log in if supplied PIN matches actual account PIN
+        if (loggedIn) {
+            loggedInAccount = account;
+            logger.info("Logged in account ID: {}", loggedInAccount.getId());
+        }
+        else {
+            logger.error("User attempted to log in to account ID {} with incorrect PIN", accountId);
+        }
         
         return loggedIn;
     }
