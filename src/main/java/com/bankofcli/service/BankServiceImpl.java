@@ -123,6 +123,7 @@ public class BankServiceImpl implements BankService {
         Account destinationAccount = bankDao.selectAccountById(destinationAccountId).orElseThrow(
             () -> new NoSuchElementException("Cannot transfer money to non-existent account " + destinationAccountId)
         );
+        if (destinationAccountId == loggedInAccount.getId()) { throw new IllegalArgumentException("Cannot transfer money to the same account."); }
         if (amount.signum() <= 0) { throw new IllegalArgumentException("Amount of money transferred must be positive"); }
         if (amount.compareTo(loggedInAccount.getBalance()) > 0) { throw new IllegalArgumentException("Amount of money transferred cannot exceed account balance"); }
 
