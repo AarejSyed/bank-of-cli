@@ -94,8 +94,8 @@ public class BankRepl {
     // Log in to existing account
     private void logInToAccount() {
         // Get account ID and PIN from user
-        System.out.println("Account ID:");
-        long accountId = Long.parseLong(userInput());
+        long accountId = getIdFromUser("Account ID:");
+        if (accountId == -1) { return; }
         System.out.println("PIN:");
         String pin = userInput();
 
@@ -312,6 +312,25 @@ public class BankRepl {
         System.out.println();
     }
 
+    // Get ID (account or bank transaction) from user
+    private long getIdFromUser(String prompt) {
+        System.out.println(prompt);
+        String idString = userInput();
+
+        // Convert ID to long
+        long id;
+        try { id = Long.parseLong(idString);}
+
+        // Notify user and end process if ID is not a valid integer
+        catch (NumberFormatException e) {
+            System.out.println("Input must be a valid integer.");
+            System.out.println();
+            return -1;
+        }
+
+        return id;
+    }
+    
     // Get amount of money from user
     private BigDecimal getAmountFromUser(String action) {
         System.out.println("Amount to " + action + ":");
