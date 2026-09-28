@@ -11,7 +11,7 @@ Bank of CLI’s Core Ledger is a prototype banking application that runs in the 
 
 ## Features
 
-**Secure Access:** Users can register and log in using a unique Account ID and PIN.
+**Account Access:** Users can register and log in using a unique Account ID and PIN.
 
 **Balance Management:** Users can check their current account balance at any time.
 
@@ -20,7 +20,7 @@ Bank of CLI’s Core Ledger is a prototype banking application that runs in the 
 - **Withdraw:** Remove funds from their account with overdraft protection.
 - **Transfer:** Transfer money from their account to another.
 
-**Audit Trail:** Users can view their recent transaction history.
+**Audit Trail:** Users can view their transaction history.
 
 **System Logging:** The application maintains a log file to track activity, both successful and failed.
 
@@ -40,7 +40,7 @@ Additionally, the application uses a PostgreSQL database.
 
 **Maven:** Build tool
 
-**PostgreSQL:** Database language
+**PostgreSQL:** Relational database management system
 
 **JDBC:** Database communication
 
