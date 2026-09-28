@@ -70,7 +70,7 @@ Additionally, the application uses a PostgreSQL database.
 
 ## Database Setup
 
-Run `/sql/schema.sql` on the database to set it up for Core Ledger. Optionally, for a pre-existing local database, run `reset-local-db.sql` first to clear previous contents; **do not** do this otherwise.
+Run `/sql/schema.sql` on the database to set it up for Core Ledger. Optionally, for a pre-existing local database, run `sql/reset-local-db.sql` first to clear previous contents; **do not** do this otherwise.
 
 For the application to connect to a PostgreSQL database, the user must create `db.properties` in `/src/main/resources/` according to this format:
 
